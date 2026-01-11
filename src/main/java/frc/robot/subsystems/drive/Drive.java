@@ -187,6 +187,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
                             modulePositions, Optional.of(rawGyroRotation), sampleTimestamps[i]));
         }
 
+        
+
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Robot.CURRENT_ROBOT_MODE != RobotMode.SIM);
         RobotState.getInstance().updateAlerts();

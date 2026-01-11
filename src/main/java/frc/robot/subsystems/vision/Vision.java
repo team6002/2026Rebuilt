@@ -25,9 +25,14 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -175,5 +180,61 @@ public class Vision extends SubsystemBase {
     @FunctionalInterface
     public interface VisionConsumer {
         void accept(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs);
+    }
+
+    public Pose2d lastResult(SwerveDriveSimulation driveSimulation, int cameraIndex) {
+        List<Pose3d> theTagPoses=new ArrayList<>();
+        int tagIndexOfClosestTag=0;
+        double tagDistanceFromRobot=1000;
+        double closestTagDistanceFromRobot=tagDistanceFromRobot;
+        Pose3d currentTag;
+        Pose2d currentRobotPose=driveSimulation.getSimulatedDriveTrainPose();
+        
+        for (int i=0; i<inputs[cameraIndex].tagIds.length; i++){
+            currentTag = aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
+            theTagPoses.add(currentTag);
+            tagDistanceFromRobot = currentRobotPose.getTranslation().getDistance(currentTag.getTranslation().toTranslation2d());
+            
+            if (tagDistanceFromRobot < closestTagDistanceFromRobot) {
+                closestTagDistanceFromRobot=tagDistanceFromRobot;
+                tagIndexOfClosestTag = i;
+            }
+        }
+
+        if (!theTagPoses.isEmpty()) {
+            return theTagPoses.get(tagIndexOfClosestTag).toPose2d();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param drive
+     * @return Returns the last result of the vision in the real world.
+     */
+    public Pose2d lastResult(Drive drive, int cameraIndex) {
+        List<Pose3d> theTagPoses=new ArrayList<>();
+        int tagIndexOfClosestTag=0;
+        double tagDistanceFromRobot=1000;
+        double closestTagDistanceFromRobot=tagDistanceFromRobot;
+        Pose3d currentTag;
+        Pose2d currentRobotPose=drive.getPose();
+        
+        for (int i=0; i<inputs[cameraIndex].tagIds.length; i++){
+            currentTag = aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
+            theTagPoses.add(currentTag);
+            tagDistanceFromRobot = currentRobotPose.getTranslation().getDistance(currentTag.getTranslation().toTranslation2d());
+            
+            if (tagDistanceFromRobot < closestTagDistanceFromRobot) {
+                closestTagDistanceFromRobot=tagDistanceFromRobot;
+                tagIndexOfClosestTag = i;
+            }
+        }
+
+        if (!theTagPoses.isEmpty()) {
+            return theTagPoses.get(tagIndexOfClosestTag).toPose2d();
+        } else {
+            return null;
+        }
     }
 }

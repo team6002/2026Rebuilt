@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.TheAutoAlign;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.commands.reefscape.ReefAlignment;
@@ -232,6 +233,8 @@ public class RobotContainer {
                 .and(driver.l4Button())
                 .whileTrue(autoAlign(ReefAlignment.Side.RIGHT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
 
+        driver.autoAlignmentButtonRight().onTrue(new TheAutoAlign(driveSimulation, vision, drive, 1, 0, 0));
+        
         driver.l3Button().onTrue(superStructure.moveToPose(SuperStructure.SuperStructurePose.IDLE));
 
         driver.l2Button().onTrue(superStructure.moveToPose(SuperStructure.SuperStructurePose.PREPARE_TO_RUN));
