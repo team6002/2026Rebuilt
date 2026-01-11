@@ -7,11 +7,6 @@ import frc.robot.Robot;
 import frc.robot.commands.reefscape.ReefAlignment;
 
 public class ReefConstants {
-    public static void loadStatic() {
-        ReefAlignment.BranchTarget target1 = REEF_ALIGNMENT_POSITIONS_BLUE[0];
-        ReefAlignment.BranchTarget target2 = REEF_ALIGNMENT_POSITIONS_RED[0];
-    }
-
     public static final Distance ROBOT_TO_TARGET_DISTANCE = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
             // for simulation
             ? Centimeters.of(37.3)

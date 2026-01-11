@@ -42,8 +42,8 @@ public class DriveConstants {
     public static final double maxSpeedMetersPerSec = 4.8;
     public static final LinearVelocity CHASSIS_MAX_VELOCITY = MetersPerSecond.of(maxSpeedMetersPerSec);
     public static final double odometryFrequency = 100.0; // Hz
-    public static final double trackWidth = Units.inchesToMeters(21.0);
-    public static final double wheelBase = Units.inchesToMeters(22.5);
+    public static final double trackWidth = Units.inchesToMeters(24);
+    public static final double wheelBase = Units.inchesToMeters(30);
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
     public static final Translation2d[] moduleTranslations = new Translation2d[] {
         new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
@@ -132,7 +132,7 @@ public class DriveConstants {
     public static final DriveTrainSimulationConfig mapleSimConfig = DriveTrainSimulationConfig.Default()
             .withCustomModuleTranslations(moduleTranslations)
             .withRobotMass(Kilogram.of(robotMassKg))
-            .withGyro(COTS.ofPigeon2())
+            .withGyro(COTS.ofNav2X())
             .withSwerveModule(new SwerveModuleSimulationConfig(
                     driveGearbox,
                     turnGearbox,
@@ -151,11 +151,10 @@ public class DriveConstants {
 
     public static final Mass ROBOT_MASS = Kilograms.of(50); // robot weight with bumpers
 
-    /** TODO: change motor type to match your robot */
     public static final DCMotor DRIVE_MOTOR_MODEL = DCMotor.getNeoVortex(1);
 
     public static final DCMotor STEER_MOTOR_MODEL = DCMotor.getNeo550(1);
-    /** numbers imported from {@link TunerConstants} TODO: for REV chassis, replace them with actual numbers */
+    
     public static final Distance WHEEL_RADIUS = Inches.of(1.39);
 
     public static final double DRIVE_GEAR_RATIO = driveMotorReduction;
