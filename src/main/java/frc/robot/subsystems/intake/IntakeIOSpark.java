@@ -2,8 +2,8 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -92,6 +92,6 @@ public class IntakeIOSpark implements IntakeIO {
 
     @Override
     public void PID() {
-        groundIntakeController.setReference(groundIntakeReference, groundIntakeType);
+        groundIntakeController.setSetpoint(groundIntakeReference, groundIntakeType);
     }
 }

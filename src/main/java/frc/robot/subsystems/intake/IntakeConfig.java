@@ -1,7 +1,7 @@
 package frc.robot.subsystems.intake;
 
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class IntakeConfig {
@@ -17,13 +17,11 @@ public class IntakeConfig {
         intakeConfig.encoder.quadratureAverageDepth(2).quadratureMeasurementPeriod(10);
         intakeConfig
                 .closedLoop
-                .pidf(
+                .pid(
                         IntakeConstants.kP,
                         IntakeConstants.kI,
-                        IntakeConstants.kD,
-                        IntakeConstants.kFF)
+                        IntakeConstants.kD)
                 .outputRange(IntakeConstants.kMinOutput, IntakeConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-        intakeConfig.limitSwitch.forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false);
     }
 }

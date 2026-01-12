@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ShootAlgae;
+import frc.robot.commands.ShootFuel;
 import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.commands.reefscape.ReefAlignment;
@@ -221,7 +221,7 @@ public class RobotContainer {
                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootAlgae(driveSimulation));
+        if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuel(driveSimulation));
     }
 
     public Command autoAlign(ReefAlignment.Side side, AutoAlignment.AutoAlignmentConfigurations autoAlignmentConfig) {

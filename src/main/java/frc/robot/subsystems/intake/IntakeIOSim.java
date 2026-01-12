@@ -28,7 +28,7 @@ public class IntakeIOSim implements IntakeIO {
                 DCMotor.getNeo550(1));
 
         intakeSimulation = IntakeSimulation.InTheFrameIntake("Algae", driveSim,
-            Inches.of(10), IntakeSide.FRONT, 32);
+            Inches.of(20), IntakeSide.FRONT, 48);
 
         intakeSimulation.startIntake();
     }
@@ -65,10 +65,10 @@ public class IntakeIOSim implements IntakeIO {
     public void periodic() {
         groundIntakeSim.update(0.02);
 
-        Logger.recordOutput("Intake/AlgaeInHopper",  numObjectsInHopper());
+        Logger.recordOutput("Intake/FuelInHopper",  numObjectsInHopper());
     }
 
-    public static boolean obtainAlgaeFromHopper(){
+    public static boolean obtainFuelFromHopper(){
         return intakeSimulation.obtainGamePieceFromIntake();
     }
 
