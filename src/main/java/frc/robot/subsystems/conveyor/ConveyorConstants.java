@@ -1,8 +1,8 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.conveyor;
 
-public class IntakeConstants {
-    public static final int kIntakeCanId = 13;
-    public static final int kIntakeFollowerCanId = 14;
+public class ConveyorConstants {
+    public static final int kConveyorCanId = 11;
+    public static final int kConveyorFollowerCanId = 12;
 
     public static final double kP = 0.0006;
     public static final double kI = 0.0;
@@ -28,7 +28,7 @@ public class IntakeConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
-    public static final double kIntake = 4500;
+    public static final double kEnabled = 4500;
     public static final double kOff = 0;
     public static final double kReverse = -6;
     public static final double kClimb = -1;

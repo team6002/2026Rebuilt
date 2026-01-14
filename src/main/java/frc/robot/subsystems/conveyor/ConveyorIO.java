@@ -1,18 +1,18 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.conveyor;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface IntakeIO {
+public interface ConveyorIO {
     @AutoLog
-    public static class IntakeIOInputs {
-        public double intakeCurrent;
-        public double intakeVoltage;
-        public double intakeVelocity;
-        public double intakeReference;
+    public static class ConveyorIOInputs {
+        public double conveyorCurrent;
+        public double conveyorVoltage;
+        public double conveyorVelocity;
+        public double conveyorReference;
     }
 
     /** Updates the set of loggable inputs. */
-    public default void updateInputs(IntakeIOInputs inputs) {}
+    public default void updateInputs(ConveyorIOInputs inputs) {}
 
     public default double getCurrent() {
         return 0;

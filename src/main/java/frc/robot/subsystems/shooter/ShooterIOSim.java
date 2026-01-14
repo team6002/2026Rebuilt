@@ -39,6 +39,11 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
+    public void setVoltage(double voltage) {
+        shooterSim.setInputVoltage(voltage);
+    }
+
+    @Override
     public double getVoltage() {
         return shooterSim.getInputVoltage();
     }

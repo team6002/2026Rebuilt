@@ -9,9 +9,7 @@ import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,10 +28,18 @@ public class ShootFuel extends Command {
         {5.50, 72.2, 9.50}
     };
 
+    // Shooter offsets from robot center (in robot-relative coordinates)
+    private static final Translation2d CENTER_SHOOTER_OFFSET = 
+        new Translation2d(Units.inchesToMeters(-12), 0);
+    private static final Translation2d LEFT_SHOOTER_OFFSET = 
+        new Translation2d(Units.inchesToMeters(-12), Units.inchesToMeters(6));
+    private static final Translation2d RIGHT_SHOOTER_OFFSET = 
+        new Translation2d(Units.inchesToMeters(-12), Units.inchesToMeters(-6));
+
     private final Pose2d BlueHubPose =
-        new Pose2d(new Translation2d(Units.inchesToMeters(182), Units.inchesToMeters(159)), new Rotation2d());
+        new Pose2d(new Translation2d(Units.inchesToMeters(182), Units.inchesToMeters(159)), null);
     private final Pose2d RedHubPose =
-        new Pose2d(new Translation2d(Units.inchesToMeters(469), Units.inchesToMeters(159)), new Rotation2d());
+        new Pose2d(new Translation2d(Units.inchesToMeters(469), Units.inchesToMeters(159)), null);
 
     public ShootFuel(AbstractDriveTrainSimulation driveSim){
         this.driveSim = driveSim;
@@ -47,8 +53,6 @@ public class ShootFuel extends Command {
     @Override
     public void execute(){
         if(timer > 15 && IntakeIOSim.numObjectsInHopper() > 0){
-            // IntakeIOSim.obtainFuelFromHopper();
-
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
             Pose2d hubPose = 
                 DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue
@@ -57,17 +61,34 @@ public class ShootFuel extends Command {
             double distance = robotPose.getTranslation().getDistance(hubPose.getTranslation());
             ShootingParams params = getShootingParams(distance);
 
-            SimulatedArena.getInstance().addGamePieceProjectile(
-                new ReefscapeAlgaeOnFly(
-                    robotPose.getTranslation(),
-                    new Translation2d(Units.inchesToMeters(-12), 0),
-                    driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                    getTurretAngleToHub(robotPose, hubPose, params),
-                    Inches.of(6),
-                    MetersPerSecond.of(params.velocityMPS),
-                    Degrees.of(params.angleDegrees)
-                )
-            );
+            // Shoot up to 3 balls (one from each shooter)
+            int ballsToShoot = Math.min(3, IntakeIOSim.numObjectsInHopper());
+            
+            for (int i = 0; i < ballsToShoot; i++) {
+                IntakeIOSim.obtainFuelFromHopper();
+                
+                // Select shooter offset based on which ball we're shooting
+                Translation2d shooterOffset;
+                if (i == 0) {
+                    shooterOffset = CENTER_SHOOTER_OFFSET;
+                } else if (i == 1) {
+                    shooterOffset = LEFT_SHOOTER_OFFSET;
+                } else {
+                    shooterOffset = RIGHT_SHOOTER_OFFSET;
+                }
+
+                SimulatedArena.getInstance().addGamePieceProjectile(
+                    new ReefscapeAlgaeOnFly(
+                        robotPose.getTranslation(),
+                        shooterOffset,
+                        driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                        robotPose.getRotation(),
+                        Inches.of(6),
+                        MetersPerSecond.of(params.velocityMPS),
+                        Degrees.of(params.angleDegrees)
+                    )
+                );
+            }
 
             timer = 0;
         } else {
@@ -108,32 +129,5 @@ public class ShootFuel extends Command {
         
         // Fallback (shouldn't reach here)
         return new ShootingParams(75.0, 7.0);
-    }
-
-    public Rotation2d getTurretAngleToHub(Pose2d robotPose, Pose2d hubPose, ShootingParams params) {
-        Translation2d robotPosition = robotPose.getTranslation();
-        Translation2d hubPosition = hubPose.getTranslation();
-
-        ChassisSpeeds fieldRelativeSpeeds = driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative();
-        Translation2d robotVelocity = new Translation2d(
-            fieldRelativeSpeeds.vxMetersPerSecond,
-            fieldRelativeSpeeds.vyMetersPerSecond
-        );
-
-        double projSpeed = Math.cos(Math.toRadians(params.angleDegrees)) * params.velocityMPS;
-
-        Translation2d relativeVelocity = robotVelocity.unaryMinus();
-
-        // Iterative solution for leading the shot
-        Translation2d targetPosition = hubPosition;
-        for (int i = 0; i < 3; i++) {
-            Translation2d toTarget = targetPosition.minus(robotPosition);
-            double timeToTarget = toTarget.getNorm() / projSpeed;
-
-            targetPosition = hubPosition.plus(relativeVelocity.times(timeToTarget));
-        }
-        
-        Translation2d relativeTranslation = targetPosition.minus(robotPosition);
-        return relativeTranslation.getAngle();
     }
 }

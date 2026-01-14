@@ -1,21 +1,21 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.conveyor;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import org.littletonrobotics.junction.Logger;
 
-public class Intake extends SubsystemBase {
-    private final IntakeIO io;
-    private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+public class Conveyor extends SubsystemBase {
+    private final ConveyorIO io;
+    private final ConveyorIOInputsAutoLogged inputs = new ConveyorIOInputsAutoLogged();
 
     private final SysIdRoutine sysIdRoutine;
 
-    public Intake(IntakeIO io) {
+    public Conveyor(ConveyorIO io) {
         this.io = io;
         this.sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(null, null, null, 
-                (state) -> Logger.recordOutput("/Intake/SysIdState", state.toString())),
+                (state) -> Logger.recordOutput("/Conveyor/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
                 null,

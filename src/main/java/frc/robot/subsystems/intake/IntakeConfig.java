@@ -6,6 +6,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class IntakeConfig {
     public static final SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    public static final SparkMaxConfig intakeFollowerConfig = new SparkMaxConfig();
 
     static {
         intakeConfig
@@ -23,5 +24,11 @@ public class IntakeConfig {
                         IntakeConstants.kD)
                 .outputRange(IntakeConstants.kMinOutput, IntakeConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+
+        intakeFollowerConfig
+                .follow(IntakeConstants.kIntakeCanId, true)
+                .smartCurrentLimit(40)
+                .voltageCompensation(12.0);
+        intakeFollowerConfig.encoder.quadratureAverageDepth(2).quadratureMeasurementPeriod(10);
     }
 }

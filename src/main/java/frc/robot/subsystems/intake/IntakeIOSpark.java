@@ -5,16 +5,14 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 public class IntakeIOSpark implements IntakeIO {
     private final SparkMax intakeMotor;
+    private final SparkMax intakeMotorFollower;
     private final RelativeEncoder intakeEncoder;
     private final SparkClosedLoopController intakeController;
-    private final SparkLimitSwitch leftLimit;
-    private final SparkLimitSwitch rightLimit;
 
     private double intakeReference;
     private ControlType intakeType;
@@ -22,6 +20,7 @@ public class IntakeIOSpark implements IntakeIO {
     public IntakeIOSpark() {
         // initialize motor
         intakeMotor = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
+        intakeMotorFollower = new SparkMax(IntakeConstants.kIntakeFollowerCanId, MotorType.kBrushless);
 
         // initialize PID controller
         intakeController = intakeMotor.getClosedLoopController();
@@ -32,9 +31,10 @@ public class IntakeIOSpark implements IntakeIO {
         // apply config
         intakeMotor.configure(
                 IntakeConfig.intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                
+        intakeMotorFollower.configure(
+                IntakeConfig.intakeFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        leftLimit = intakeMotor.getForwardLimitSwitch();
-        rightLimit = intakeMotor.getReverseLimitSwitch();
         // reset target speed in init
         intakeReference = 0;
         intakeType = ControlType.kVoltage;
@@ -78,16 +78,6 @@ public class IntakeIOSpark implements IntakeIO {
     public void setReference(double velocity) {
         intakeReference = velocity;
         intakeType = ControlType.kVelocity;
-    }
-
-    @Override
-    public boolean hasLeftCoral() {
-        return leftLimit.isPressed();
-    }
-
-    @Override
-    public boolean hasRightCoral() {
-        return rightLimit.isPressed();
     }
 
     @Override

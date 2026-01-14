@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class IntakeIOSim implements IntakeIO {
 
-    private final DCMotorSim groundIntakeSim;
+    private final DCMotorSim intakeSim;
     private final PIDController groundPIDController =
             new PIDController(IntakeConstants.kSimP, IntakeConstants.kSimI, IntakeConstants.kSimD);
     private static IntakeSimulation intakeSimulation;
@@ -23,9 +23,9 @@ public class IntakeIOSim implements IntakeIO {
     public static double objectsInHopper = 0;
 
     public IntakeIOSim(AbstractDriveTrainSimulation driveSim) {
-        groundIntakeSim = new DCMotorSim(
+        intakeSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), .178, IntakeConstants.kGearRatio),
-                DCMotor.getNeo550(1));
+                DCMotor.getNeo550(2));
 
         intakeSimulation = IntakeSimulation.InTheFrameIntake("Algae", driveSim,
             Inches.of(20), IntakeSide.FRONT, 48);
@@ -52,23 +52,28 @@ public class IntakeIOSim implements IntakeIO {
     }
 
     @Override
+    public void setVoltage(double voltage) {
+        intakeSim.setInputVoltage(voltage);
+    }
+
+    @Override
     public double getVoltage() {
-        return groundIntakeSim.getInputVoltage();
+        return intakeSim.getInputVoltage();
     }
 
     @Override
     public double getCurrent() {
-        return groundIntakeSim.getCurrentDrawAmps();
+        return intakeSim.getCurrentDrawAmps();
     }
 
     @Override
     public void PID() {
-        groundIntakeSim.setInput(groundPIDController.calculate(reference));
+        intakeSim.setInput(groundPIDController.calculate(reference));
     }
 
     @Override
     public void periodic() {
-        groundIntakeSim.update(0.02);
+        intakeSim.update(0.02);
 
         Logger.recordOutput("Intake/FuelInHopper",  numObjectsInHopper());
     }
@@ -77,7 +82,7 @@ public class IntakeIOSim implements IntakeIO {
         return intakeSimulation.obtainGamePieceFromIntake();
     }
 
-    public static double numObjectsInHopper(){
+    public static int numObjectsInHopper(){
         return intakeSimulation.getGamePiecesAmount();
     }
 }
