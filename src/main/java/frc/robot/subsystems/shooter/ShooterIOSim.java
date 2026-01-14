@@ -34,6 +34,11 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
+    public double getReference(){
+        return reference;
+    }
+
+    @Override
     public double getVoltage() {
         return shooterSim.getInputVoltage();
     }
@@ -41,6 +46,11 @@ public class ShooterIOSim implements ShooterIO {
     @Override
     public double getCurrent() {
         return shooterSim.getCurrentDrawAmps();
+    }
+
+    @Override
+    public double getVelocity(){
+        return shooterSim.getAngularVelocityRadPerSec();
     }
 
     @Override

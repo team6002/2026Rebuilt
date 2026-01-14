@@ -10,34 +10,34 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 public class IntakeIOSpark implements IntakeIO {
-    private final SparkMax groundIntakeMotor;
-    private final RelativeEncoder groundIntakeEncoder;
-    private final SparkClosedLoopController groundIntakeController;
+    private final SparkMax intakeMotor;
+    private final RelativeEncoder intakeEncoder;
+    private final SparkClosedLoopController intakeController;
     private final SparkLimitSwitch leftLimit;
     private final SparkLimitSwitch rightLimit;
 
-    private double groundIntakeReference;
-    private ControlType groundIntakeType;
+    private double intakeReference;
+    private ControlType intakeType;
 
     public IntakeIOSpark() {
         // initialize motor
-        groundIntakeMotor = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
+        intakeMotor = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
 
         // initialize PID controller
-        groundIntakeController = groundIntakeMotor.getClosedLoopController();
+        intakeController = intakeMotor.getClosedLoopController();
 
         // initalize encoder
-        groundIntakeEncoder = groundIntakeMotor.getEncoder();
+        intakeEncoder = intakeMotor.getEncoder();
 
         // apply config
-        groundIntakeMotor.configure(
+        intakeMotor.configure(
                 IntakeConfig.intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        leftLimit = groundIntakeMotor.getForwardLimitSwitch();
-        rightLimit = groundIntakeMotor.getReverseLimitSwitch();
+        leftLimit = intakeMotor.getForwardLimitSwitch();
+        rightLimit = intakeMotor.getReverseLimitSwitch();
         // reset target speed in init
-        groundIntakeReference = 0;
-        groundIntakeType = ControlType.kVoltage;
+        intakeReference = 0;
+        intakeType = ControlType.kVoltage;
     }
 
     @Override
@@ -50,34 +50,34 @@ public class IntakeIOSpark implements IntakeIO {
 
     @Override
     public double getVelocity() {
-        return groundIntakeEncoder.getVelocity();
+        return intakeEncoder.getVelocity();
     }
 
     @Override
     public double getCurrent() {
-        return groundIntakeMotor.getOutputCurrent();
+        return intakeMotor.getOutputCurrent();
     }
 
     @Override
     public double getVoltage() {
-        return groundIntakeMotor.getBusVoltage() * groundIntakeMotor.getAppliedOutput();
+        return intakeMotor.getBusVoltage() * intakeMotor.getAppliedOutput();
     }
 
     @Override
     public double getReference() {
-        return groundIntakeReference;
+        return intakeReference;
     }
 
     @Override
     public void setVoltage(double voltage) {
-        groundIntakeReference = voltage;
-        groundIntakeType = ControlType.kVoltage;
+        intakeReference = voltage;
+        intakeType = ControlType.kVoltage;
     }
 
     @Override
     public void setReference(double velocity) {
-        groundIntakeReference = velocity;
-        groundIntakeType = ControlType.kVelocity;
+        intakeReference = velocity;
+        intakeType = ControlType.kVelocity;
     }
 
     @Override
@@ -92,6 +92,6 @@ public class IntakeIOSpark implements IntakeIO {
 
     @Override
     public void PID() {
-        groundIntakeController.setSetpoint(groundIntakeReference, groundIntakeType);
+        intakeController.setSetpoint(intakeReference, intakeType);
     }
 }

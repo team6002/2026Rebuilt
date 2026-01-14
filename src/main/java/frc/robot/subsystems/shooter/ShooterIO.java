@@ -34,14 +34,6 @@ public interface ShooterIO {
 
     public default void setReference(double velocity) {}
 
-    public default boolean hasLeftCoral() {
-        return false;
-    }
-
-    public default boolean hasRightCoral() {
-        return false;
-    }
-
     public default void PID() {}
 
     public default void periodic() {}

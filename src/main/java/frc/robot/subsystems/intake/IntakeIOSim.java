@@ -47,6 +47,11 @@ public class IntakeIOSim implements IntakeIO {
     }
 
     @Override
+    public double getReference(){
+        return reference;
+    }
+
+    @Override
     public double getVoltage() {
         return groundIntakeSim.getInputVoltage();
     }

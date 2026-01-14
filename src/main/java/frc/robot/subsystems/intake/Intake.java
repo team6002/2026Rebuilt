@@ -35,10 +35,6 @@ public class Intake extends SubsystemBase {
         io.setReference(velocity);
     }
 
-    public boolean hasCorral() {
-        return io.hasLeftCoral() && io.hasRightCoral();
-    }
-
     @Override
     public void periodic() {
         io.updateInputs(inputs);
