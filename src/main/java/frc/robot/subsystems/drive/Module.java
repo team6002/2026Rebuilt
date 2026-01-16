@@ -15,7 +15,6 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.constants.DriveControlLoops.SWERVE_VELOCITY_DEADBAND;
-import static frc.robot.constants.DriveControlLoops.USE_TORQUE_FEEDFORWARD;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -157,7 +156,7 @@ public class Module {
     /** Runs the module with the specified setpoint state. Returns the optimized state. */
     public SwerveModuleState forceRunSetPoint(
             SwerveModuleState newSetpoint, Force robotRelativeFeedforwardForceX, Force robotRelativeFeedforwardForceY) {
-        newSetpoint = SwerveModuleState.optimize(newSetpoint, getSteerFacing());
+        newSetpoint.optimize(getSteerFacing());
 
         double desiredMotorVelocityRadPerSec =
                 newSetpoint.speedMetersPerSecond / WHEEL_RADIUS.in(Meters) * DRIVE_GEAR_RATIO;
@@ -167,8 +166,8 @@ public class Module {
         double moduleFeedforwardForceNewtons =
                 force2d.getNorm() * force2d.getAngle().minus(getSteerFacing()).getCos();
         double wheelFeedforwardTorque = moduleFeedforwardForceNewtons * WHEEL_RADIUS.in(Meters);
-        double motorFeedforwardTorque = wheelFeedforwardTorque / DRIVE_GEAR_RATIO;
-        if (!USE_TORQUE_FEEDFORWARD) motorFeedforwardTorque = 0;
+        // double motorFeedforwardTorque = wheelFeedforwardTorque / DRIVE_GEAR_RATIO;
+        // if (!USE_TORQUE_FEEDFORWARD) motorFeedforwardTorque = 0;
         io.setDriveVelocity(desiredMotorVelocityRadPerSec); // , NewtonMeters.of(motorFeedforwardTorque));
         Logger.recordOutput("ModuleFeedforwards/" + index + "/Wheel FF Torque (N*M)", wheelFeedforwardTorque);
         io.setTurnPosition(newSetpoint.angle);
