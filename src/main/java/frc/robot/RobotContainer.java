@@ -16,6 +16,8 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -27,6 +29,7 @@ import frc.robot.autos.AUTO_Middle;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TheAutoAlign;
 import frc.robot.commands.drive.JoystickDrive;
+import frc.robot.commands.drive.JoystickDriveAndAimAtTarget;
 import frc.robot.constants.*;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.GyroIO;
@@ -101,7 +104,7 @@ public class RobotContainer {
             case SIM:
                 // create a maple-sim swerve drive simulation instance
                 this.driveSimulation =
-                        new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3.1, 4, new Rotation2d(Math.PI)));
+                        new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3.1, 4, new Rotation2d()));
                 // add the simulated drivetrain to the simulation field
                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                 // Sim robot, instantiate physics sim IO implementations
@@ -182,9 +185,13 @@ public class RobotContainer {
         IntSupplier pov =
                 // driver.getController().getHID()::getPOV;
                 () -> -1;
-        final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
+
+                new JoystickDriveAndAimAtTarget();
+        // new JoystickDrive(driveInput, ()->true, pov, drive);
+        // JoystickDriveAndAimAtTarget.driveAndAimAtDirection(driveInput, (HolonomicDriveSubsystem)drive, ()->new Rotation2d(), 1, true);
+        final Command joystickDrive = new JoystickDrive(driveInput, ()->true, pov, drive);
         drive.setDefaultCommand(joystickDrive);
-        JoystickDrive.instance = Optional.of(joystickDrive);
+        // Command.instance = Optional.of(joystickDrive);
 
         /* auto alignment example, delete it for your project */
         // driver.autoAlignmentButtonLeft()
@@ -195,7 +202,9 @@ public class RobotContainer {
         //         .and(driver.l4Button())
         //         .whileTrue(autoAlign(ReefAlignment.Side.RIGHT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
 
-        driver.autoAlignmentButtonRight().onTrue(new TheAutoAlign(driveSimulation, vision, drive, 1, 0, 0));
+        driver.autoAlignmentButtonRight().onTrue(new TheAutoAlign(driveSimulation, vision, drive, 0.5, 0, 0));
+
+        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(drive, ()->-driveInput.joystickYSupplier.getAsDouble(), ()->-driveInput.joystickXSupplier.getAsDouble(), ()->new Rotation2d(Math.atan2(4-drive.getPose().getY(), 4-drive.getPose().getX()))));
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
@@ -223,7 +232,7 @@ public class RobotContainer {
     public void resetSimulationField() {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
-        drive.resetOdometry(new Pose2d(3.1, 4, new Rotation2d(Math.PI)));
+        drive.resetOdometry(new Pose2d(3.1, 4, new Rotation2d()));
         SimulatedArena.getInstance().resetFieldForAuto();
     }
 
