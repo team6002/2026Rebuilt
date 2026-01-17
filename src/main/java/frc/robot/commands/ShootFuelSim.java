@@ -46,7 +46,7 @@ public class ShootFuelSim extends Command {
         if (timer > 3 && IntakeIOSim.numObjectsInHopper() > 0) {
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
 
-            double distance = robotPose.getTranslation().getDistance(FieldConstants.HubPose);
+            double distance = robotPose.getTranslation().getDistance(FieldConstants.getHubPose());
             ShooterConstants.ShootingParams params = ShooterConstants.getShootingParams(distance);
 
             IntakeIOSim.obtainFuelFromHopper();

@@ -31,7 +31,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -429,10 +428,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         return CHASSIS_MAX_ANGULAR_ACCELERATION.in(RadiansPerSecondPerSecond);
     }
 
-    public Command followPath(String pathName){
+    public Command followPath(String pathName, Boolean mirrored){
         PathPlannerPath path;
         try{
-            path = PathPlannerPath.fromPathFile(pathName);
+            path = mirrored ? PathPlannerPath.fromPathFile(pathName).mirrorPath() : PathPlannerPath.fromPathFile(pathName);
         }catch (Exception e) {
            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
            return Commands.none();
@@ -441,20 +440,21 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     }
 
     /**attempt to load a pathplanner path with the path name and return that path's start pose, if it fail print an error message and stack trace to the DS */
-    public void setAutoStartPose(String pathName){
+    public void setAutoStartPose(String pathName, Boolean mirrored){
         PathPlannerPath path;
         try{
-            path = PathPlannerPath.fromPathFile(pathName);
+            path = mirrored ? PathPlannerPath.fromPathFile(pathName).mirrorPath() : PathPlannerPath.fromPathFile(pathName);
+            path = DriverStation.getAlliance().get() == Alliance.Red ? path.flipPath() : path;
         }catch (Exception e) {
            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
            return;
         }
-
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
-            resetOdometry(path.getStartingHolonomicPose().get().transformBy(new Transform2d(3, 0, new Rotation2d())));
-        } else {
-            resetOdometry(path.getStartingHolonomicPose().get());
-        }
+        // if (DriverStation.getAlliance().get() == Alliance.Red) {
+        //     resetOdometry(path.getStartingHolonomicPose().get().transformBy(new Transform2d(9.5, 0, new Rotation2d(Math.PI))));
+        // } else {
+        //     resetOdometry(path.getStartingHolonomicPose().get().transformBy(new Transform2d(0, 0, new Rotation2d())));
+        // }
+        resetOdometry(path.getStartingHolonomicPose().get());
     }
 
     /** Turns the motor brakes on */
