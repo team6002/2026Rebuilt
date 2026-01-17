@@ -239,10 +239,10 @@ public class RobotContainer {
         drive.resetOdometry(new Pose2d(3.1, 4, new Rotation2d()));
         SimulatedArena.getInstance().resetFieldForAuto();
 
-        for(int i = 0; i < 100; i++){
-                SimulatedArena.getInstance().addGamePiece(
-                        new ReefscapeAlgaeOnField(new Translation2d(7 + Math.random()*2, 1 + Math.random() * 6)));
-        }
+        // for(int i = 0; i < 100; i++){
+        //         SimulatedArena.getInstance().addGamePiece(
+        //                 new ReefscapeAlgaeOnField(new Translation2d(7 + Math.random()*2, 1 + Math.random() * 6)));
+        // }
     }
 
     public void updateSimulation() {
