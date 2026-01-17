@@ -1,10 +1,6 @@
 plugins {
     id "java"
-<<<<<<< HEAD
-    id "edu.wpi.first.GradleRIO" version "2025.3.2"
-=======
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
->>>>>>> abf0bf0 (updated to 2026)
 }
 
 java {
@@ -47,12 +43,8 @@ deploy {
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
-<<<<<<< HEAD
-// Set to true to use debug for JNI.
-=======
 // Set to true to use debug for all targets including JNI, which will drastically impact
 // performance.
->>>>>>> abf0bf0 (updated to 2026)
 wpi.java.debugJni = false
 
 // Set this to true to enable desktop support.
@@ -92,25 +84,17 @@ test {
 }
 
 // Simulation configuration (e.g. environment variables).
-<<<<<<< HEAD
-wpi.sim.addDriverstation().defaultEnabled = true
-=======
 wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()
->>>>>>> abf0bf0 (updated to 2026)
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-<<<<<<< HEAD
-    from sourceSets.main.allSource
-=======
     from('src') { into 'backup/src' }
     from('vendordeps') { into 'backup/vendordeps' }
     from('build.gradle') { into 'backup' }
->>>>>>> abf0bf0 (updated to 2026)
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

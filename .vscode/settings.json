@@ -56,10 +56,6 @@
     "edu.wpi.first.math.proto.*",
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
-<<<<<<< HEAD
-  ]
-=======
   ],
   "java.dependency.enableDependencyCheckup": false
->>>>>>> abf0bf0 (updated to 2026)
 }
