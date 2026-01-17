@@ -206,8 +206,8 @@ public class RobotContainer {
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-        autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle(drive));
-        autoChooser.addOption("Auto Left", new AUTO_Left(drive));
+        autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle(drive, driveSimulation));
+        autoChooser.addOption("Auto Left", new AUTO_Left(drive, driveSimulation));
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
