@@ -1,34 +1,3 @@
-// package frc.robot.commands;
-
-// import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-
-// import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.geometry.Transform2d;
-// import edu.wpi.first.math.geometry.Translation2d;
-// import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-// import frc.robot.subsystems.drive.Drive;
-// import frc.robot.subsystems.vision.Vision;
-
-// public class TheAutoAlign extends SequentialCommandGroup {
-//     public TheAutoAlign(SwerveDriveSimulation driveSimulation, Vision vision, Drive drive, double tolerance, int cameraIndex, int rotation) {
-//         if (vision.lastResult(driveSimulation, cameraIndex) != null) {
-//             var targetPose = vision.lastResult(driveSimulation, cameraIndex);
-//             addCommands(
-//                 //0.2, 0.23
-//                 new goToPose(targetPose.plus(new Transform2d(new Translation2d(0.2, 0.23), new Rotation2d(Math.toRadians(rotation)))), driveSimulation, drive, tolerance)
-//             );
-//         }
-//     }
-
-//     public TheAutoAlign(Vision vision, Drive drive, double tolerance, int cameraIndex, int rotation) {
-//         if (vision.lastResult(drive, cameraIndex) != null) {
-//             var targetPose = vision.lastResult(drive, cameraIndex);
-//             addCommands(
-//                 new goToPose(targetPose.plus(new Transform2d(new Translation2d(0.2, 0.23), new Rotation2d(Math.toRadians(rotation)))), drive, tolerance)
-//             );
-//         }
-//     }
-// }
 package frc.robot.commands;
 
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;

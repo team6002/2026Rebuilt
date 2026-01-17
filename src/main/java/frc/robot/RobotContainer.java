@@ -29,6 +29,7 @@ import frc.robot.autos.AUTO_Left;
 import frc.robot.autos.AUTO_Middle;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
+import frc.robot.commands.TheAutoAlign;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.constants.*;
@@ -167,10 +168,6 @@ public class RobotContainer {
                                 Vision_Constants.camera0Name,
                                 Vision_Constants.robotToCamera0,
                                 driveSimulation::getSimulatedDriveTrainPose)
-                        // new VisionIOPhotonVisionSim(
-                        //         Vision_Constants.camera1Name,
-                        //         Vision_Constants.robotToCamera1,
-                        //         driveSimulation::getSimulatedDriveTrainPose)
                 );
 
                 aprilTagVision = new AprilTagVision(
@@ -254,6 +251,8 @@ public class RobotContainer {
                 .onlyWhile(()-> driver.scoreButton().getAsBoolean()));
 
         if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation));
+
+        driver.autoAlignmentButtonLeft().onTrue(new TheAutoAlign(vision, drive, 1, 0, 0));
     }
 
     /**

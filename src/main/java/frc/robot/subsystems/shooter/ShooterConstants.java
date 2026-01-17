@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.util.Units;
+
 public class ShooterConstants {
     public static final int kShooterCanId = 9;
     public static final int kLeftShooterCanId = 10;
@@ -65,10 +67,10 @@ public class ShooterConstants {
                 double angle = SHOOTING_TABLE[i][1] + t * (SHOOTING_TABLE[i + 1][1] - SHOOTING_TABLE[i][1]);
                 double velocity = SHOOTING_TABLE[i][2] + t * (SHOOTING_TABLE[i + 1][2] - SHOOTING_TABLE[i][2]);
 
-                return new ShootingParams(angle, velocity);
+                return new ShootingParams(Units.degreesToRadians(angle), velocity);
             }
         }
 
-        return new ShootingParams(75.0, 7.0);
+        return new ShootingParams(Units.degreesToRadians(75), 7.0);
     }
 }
