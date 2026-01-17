@@ -17,13 +17,13 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.utils.SparkUtil.*;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
@@ -241,7 +241,7 @@ public class ModuleIOSpark implements ModuleIO {
         tryUntilOk(
                 driveSpark,
                 5,
-                () -> driveSpark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+                () -> driveSpark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters));
     }
 
     @Override

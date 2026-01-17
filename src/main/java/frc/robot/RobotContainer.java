@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.autos.AUTO_Left;
+import frc.robot.autos.AUTO_Middle;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.drive.DriveCommands;
@@ -70,7 +72,6 @@ import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -130,9 +131,10 @@ public class RobotContainer {
 
                 this.vision = new Vision(
                         drive,
-                        new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
-                        new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1),
-                        new VisionIOPhotonVision(Vision_Constants.camera2Name, Vision_Constants.robotToCamera2));
+                        new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
+                        // new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1),
+                        // new VisionIOPhotonVision(Vision_Constants.camera2Name, Vision_Constants.robotToCamera2)
+                );
 
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
                 break;
@@ -140,7 +142,7 @@ public class RobotContainer {
             case SIM:
                 // create a maple-sim swerve drive simulation instance
                 this.driveSimulation =
-                        new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+                        new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3.1, 4, new Rotation2d()));
                 // add the simulated drivetrain to the simulation field
                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                 // Sim robot, instantiate physics sim IO implementations
@@ -164,11 +166,12 @@ public class RobotContainer {
                         new VisionIOPhotonVisionSim(
                                 Vision_Constants.camera0Name,
                                 Vision_Constants.robotToCamera0,
-                                driveSimulation::getSimulatedDriveTrainPose),
-                        new VisionIOPhotonVisionSim(
-                                Vision_Constants.camera1Name,
-                                Vision_Constants.robotToCamera1,
-                                driveSimulation::getSimulatedDriveTrainPose));
+                                driveSimulation::getSimulatedDriveTrainPose)
+                        // new VisionIOPhotonVisionSim(
+                        //         Vision_Constants.camera1Name,
+                        //         Vision_Constants.robotToCamera1,
+                        //         driveSimulation::getSimulatedDriveTrainPose)
+                );
 
                 aprilTagVision = new AprilTagVision(
                         new ApriltagVisionIOSim(
@@ -204,7 +207,8 @@ public class RobotContainer {
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
+        autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle(drive));
+        autoChooser.addOption("Auto Left", new AUTO_Left(drive));
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
@@ -234,7 +238,7 @@ public class RobotContainer {
                 () -> -1;
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
         drive.setDefaultCommand(joystickDrive);
-        JoystickDrive.instance = Optional.of(joystickDrive);
+        // Command.instance = Optional.of(joystickDrive);
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
@@ -264,7 +268,7 @@ public class RobotContainer {
     public void resetSimulationField() {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
-        drive.resetOdometry(new Pose2d(3, 3, new Rotation2d()));
+        drive.resetOdometry(new Pose2d(3.1, 4, new Rotation2d()));
         SimulatedArena.getInstance().resetFieldForAuto();
 
         for(int i = 0; i < 100; i++){
