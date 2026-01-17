@@ -44,6 +44,7 @@ import frc.robot.subsystems.vision.apriltags.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
+
 import java.util.List;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
@@ -216,7 +217,11 @@ public class RobotContainer {
         if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation));
         if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
 
-        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(drive, ()->-driveInput.joystickYSupplier.getAsDouble(), ()->-driveInput.joystickXSupplier.getAsDouble(), ()->new Rotation2d(Math.atan2(4-drive.getPose().getY(), 4-drive.getPose().getX()))));
+        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(
+                drive, 
+                ()-> -driveInput.joystickYSupplier.getAsDouble(), 
+                ()-> -driveInput.joystickXSupplier.getAsDouble(),
+                ()-> FieldConstants.HubPose.minus(drive.getPose().getTranslation()).getAngle()));
     }
 
     /**

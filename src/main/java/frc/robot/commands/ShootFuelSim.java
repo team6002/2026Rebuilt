@@ -11,7 +11,6 @@ import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -46,11 +45,8 @@ public class ShootFuelSim extends Command {
     public void execute(){
         if (timer > 3 && IntakeIOSim.numObjectsInHopper() > 0) {
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
-            Translation2d hubPose =
-                DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue
-                ? FieldConstants.BlueHubPose : FieldConstants.RedHubPose;
 
-            double distance = robotPose.getTranslation().getDistance(hubPose);
+            double distance = robotPose.getTranslation().getDistance(FieldConstants.HubPose);
             ShooterConstants.ShootingParams params = ShooterConstants.getShootingParams(distance);
 
             IntakeIOSim.obtainFuelFromHopper();
