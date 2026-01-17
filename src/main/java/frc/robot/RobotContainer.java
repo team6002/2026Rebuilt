@@ -31,8 +31,6 @@ import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.TheAutoAlign;
 import frc.robot.commands.drive.DriveCommands;
-import frc.robot.commands.ShootFuelSim;
-import frc.robot.commands.TheAutoAlign;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.constants.*;
 import frc.robot.subsystems.climb.Climb;
@@ -135,8 +133,6 @@ public class RobotContainer {
                 this.vision = new Vision(
                         drive,
                         new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
-                        // new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1),
-                        // new VisionIOPhotonVision(Vision_Constants.camera2Name, Vision_Constants.robotToCamera2)
                 );
 
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
@@ -232,21 +228,10 @@ public class RobotContainer {
     public void configureButtonBindings() {
         /* joystick drive command */
         final MapleJoystickDriveInput driveInput = driver.getDriveInput();
-        IntSupplier pov =
-                // driver.getController().getHID()::getPOV;
-                () -> -1;
+        IntSupplier pov = () -> -1;
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
         drive.setDefaultCommand(joystickDrive);
-        // Command.instance = Optional.of(joystickDrive);
 
-        /* auto alignment example, delete it for your project */
-        // driver.autoAlignmentButtonLeft()
-        //         .and(driver.l4Button())
-        //         .whileTrue(autoAlign(ReefAlignment.Side.LEFT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
-
-        // driver.autoAlignmentButtonRight()
-        //         .and(driver.l4Button())
-        //         .whileTrue(autoAlign(ReefAlignment.Side.RIGHT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
 
         driver.autoAlignmentButtonRight().onTrue(new TheAutoAlign(driveSimulation, vision, drive, 0.5, 0, 0));
 
@@ -262,13 +247,8 @@ public class RobotContainer {
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
         if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation));
-
-        driver.autoAlignmentButtonLeft().onTrue(new TheAutoAlign(vision, drive, 1, 0, 0));
+        if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
     }
-
-//     public Command autoAlign(ReefAlignment.Side side, AutoAlignment.AutoAlignmentConfigurations autoAlignmentConfig) {
-//         return ReefAlignment.alignToNearestBranch(drive, aprilTagVision, ledStatusLight, side, autoAlignmentConfig);
-//     }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
