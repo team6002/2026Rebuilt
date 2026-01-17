@@ -27,6 +27,7 @@ public class HoodIOSim implements HoodIO {
         inputs.hoodVoltage = getVoltage();
         inputs.hoodReference = getReference();
         inputs.hoodVelocity = Units.radiansToDegrees(getVelocity());
+        inputs.hoodPos = Units.radiansToDegrees(hoodSim.getAngularPositionRad());
     }
 
     @Override

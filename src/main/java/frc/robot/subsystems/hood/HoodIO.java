@@ -9,6 +9,7 @@ public interface HoodIO {
         public double hoodVoltage;
         public double hoodVelocity;
         public double hoodReference;
+        public double hoodPos;
     }
 
     /** Updates the set of loggable inputs. */
@@ -30,9 +31,13 @@ public interface HoodIO {
         return 0;
     }
 
+    public default double getPosition() {
+        return 0;
+    }
+
     public default void setVoltage(double voltage) {}
 
-    public default void setReference(double velocity) {}
+    public default void setReference(double angRad) {}
 
     public default void PID() {}
 

@@ -25,11 +25,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ShootFuel;
-import frc.robot.commands.drive.AutoAlignment;
+import frc.robot.commands.ShootFuelSim;
+import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.drive.JoystickDrive;
-import frc.robot.commands.reefscape.ReefAlignment;
 import frc.robot.constants.*;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbIO;
@@ -237,15 +236,6 @@ public class RobotContainer {
         drive.setDefaultCommand(joystickDrive);
         JoystickDrive.instance = Optional.of(joystickDrive);
 
-        /* auto alignment example, delete it for your project */
-        driver.autoAlignmentButtonLeft()
-                .and(driver.l4Button())
-                .whileTrue(autoAlign(ReefAlignment.Side.LEFT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
-
-        driver.autoAlignmentButtonRight()
-                .and(driver.l4Button())
-                .whileTrue(autoAlign(ReefAlignment.Side.RIGHT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
-
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
                 ? () -> drive.resetOdometry(
@@ -255,11 +245,11 @@ public class RobotContainer {
                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuel(driveSimulation));
-    }
+        //map the correct command based on if robot is running in real or sim mode
+        if(RobotBase.isReal())  driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter)
+                .onlyWhile(()-> driver.scoreButton().getAsBoolean()));
 
-    public Command autoAlign(ReefAlignment.Side side, AutoAlignment.AutoAlignmentConfigurations autoAlignmentConfig) {
-        return ReefAlignment.alignToNearestBranch(drive, aprilTagVision, ledStatusLight, side, autoAlignmentConfig);
+        if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation));
     }
 
     /**

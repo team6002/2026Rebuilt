@@ -409,4 +409,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     public void setMotorBrake(boolean motorBrakeEnabled) {
         for (int i = 0; i < 4; i++) modules[i].setMotorBrake(motorBrakeEnabled);
     }
+
+    public static Pose2d getPoseStatic(){
+        return RobotState.getInstance().getPoseWithLookAhead();
+    }
 }

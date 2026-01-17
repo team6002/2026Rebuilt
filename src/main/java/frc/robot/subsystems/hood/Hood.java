@@ -47,8 +47,12 @@ public class Hood extends SubsystemBase {
         io.setVoltage(voltage);
     }
 
-    public void setReference(double velocity) {
-        io.setReference(velocity);
+    public void setReference(double angRad) {
+        io.setReference(angRad);
+    }
+
+    public double getPosition() {
+        return io.getPosition();
     }
 
     @Override

@@ -8,31 +8,33 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
-public class HoodIOSpark implements HoodIO {
-    private final SparkMax shooterMotor;
-    private final RelativeEncoder shooterEncoder;
-    private final SparkClosedLoopController shooterController;
+import edu.wpi.first.math.util.Units;
 
-    private double shooterReference;
-    private ControlType shooterType;
+public class HoodIOSpark implements HoodIO {
+    private final SparkMax hoodMotor;
+    private final RelativeEncoder hoodEncoder;
+    private final SparkClosedLoopController hoodController;
+
+    private double hoodReference;
+    private ControlType hoodType;
 
     public HoodIOSpark() {
         // initialize motor
-        shooterMotor = new SparkMax(HoodConstants.kHoodCanId, MotorType.kBrushless);
+        hoodMotor = new SparkMax(HoodConstants.kHoodCanId, MotorType.kBrushless);
 
         // initialize PID controller
-        shooterController = shooterMotor.getClosedLoopController();
+        hoodController = hoodMotor.getClosedLoopController();
 
         // initalize encoder
-        shooterEncoder = shooterMotor.getEncoder();
+        hoodEncoder = hoodMotor.getEncoder();
 
         // apply config
-        shooterMotor.configure(
+        hoodMotor.configure(
                 HoodConfig.hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
-        shooterReference = 0;
-        shooterType = ControlType.kPosition;
+        hoodReference = 0;
+        hoodType = ControlType.kPosition;
     }
 
     @Override
@@ -41,42 +43,43 @@ public class HoodIOSpark implements HoodIO {
         inputs.hoodCurrent = getCurrent();
         inputs.hoodVoltage = getVoltage();
         inputs.hoodVelocity = getVelocity();
+        inputs.hoodPos = Units.radiansToDegrees(getPosition());
     }
 
     @Override
     public double getVelocity() {
-        return shooterEncoder.getVelocity();
+        return hoodEncoder.getVelocity();
     }
 
     @Override
     public double getCurrent() {
-        return shooterMotor.getOutputCurrent();
+        return hoodMotor.getOutputCurrent();
     }
 
     @Override
     public double getVoltage() {
-        return shooterMotor.getBusVoltage() * shooterMotor.getAppliedOutput();
+        return hoodMotor.getBusVoltage() * hoodMotor.getAppliedOutput();
     }
 
     @Override
     public double getReference() {
-        return shooterReference;
+        return hoodReference;
     }
 
     @Override
     public void setVoltage(double voltage) {
-        shooterReference = voltage;
-        shooterType = ControlType.kVoltage;
+        hoodReference = voltage;
+        hoodType = ControlType.kVoltage;
     }
 
     @Override
-    public void setReference(double velocity) {
-        shooterReference = velocity;
-        shooterType = ControlType.kVelocity;
+    public void setReference(double angRad) {
+        hoodReference = angRad;
+        hoodType = ControlType.kPosition;
     }
 
     @Override
     public void PID() {
-        shooterController.setSetpoint(shooterReference, shooterType);
+        hoodController.setSetpoint(hoodReference, hoodType);
     }
 }
