@@ -174,7 +174,6 @@ public class RobotContainer {
         }
 
         this.ledStatusLight = new LEDStatusLight(0, 155, true, false);
-        FieldConstants.updateAlliance();
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
