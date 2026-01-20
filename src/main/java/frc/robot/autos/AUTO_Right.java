@@ -6,27 +6,23 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.IntakeIOSim;
 
-public class AUTO_Middle extends SequentialCommandGroup {
-    public AUTO_Middle(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
+public class AUTO_Right extends SequentialCommandGroup {
+    public AUTO_Right(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
         addCommands(
             new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(8))
-            ,new InstantCommand(()->drive.setAutoStartPose("pickupHPM1", mirrored))
-            ,drive.followPath("pickupHPM1", mirrored)
-            ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
-            ,new WaitCommand(2)
-            // ,drive.followPath("shootfirstcycle")
+            ,new InstantCommand(()->drive.setAutoStartPose("getmiddleR1", mirrored))
+            ,drive.followPath("getmiddleR1", mirrored)
+            ,drive.followPath("gotoHPR1", mirrored)
             ,new InstantCommand(()->sim.rotateAboutCenter(FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle().getRadians() + (DriverStation.getAlliance().get() == Alliance.Blue ? 0 : Math.PI)))
             ,new ShootFuelSim(sim)
-            ,drive.followPath("pickupmiddleM1", mirrored)
-            ,drive.followPath("shootclimbM1", mirrored)
+            ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
+            ,drive.followPath("climbshootR1", mirrored)
             ,new ShootFuelSim(sim)
-            // ,drive.followPath("climb")
         );
     }
 }

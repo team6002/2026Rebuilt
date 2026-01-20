@@ -16,15 +16,6 @@ public class AUTO_MiddleSide extends SequentialCommandGroup {
             ,drive.followPath("swipehalfM2", mirrored)
             ,drive.followPath("shootfuelM2", mirrored)
             ,new ShootFuelSim(sim)
-            // ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
-            // ,new WaitCommand(2)
-            // // ,drive.followPath("shootfirstcycle")
-            // ,new InstantCommand(()->sim.rotateAboutCenter(FieldConstants.HubPose.minus(drive.getPose().getTranslation()).getAngle().getRadians()))
-            // ,new ShootFuelSim(sim)
-            // ,drive.followPath("pickuplastcycle")
-            // ,drive.followPath("shootlastcycle")
-            // ,new ShootFuelSim(sim)
-            // // ,drive.followPath("climb")
         );
     }
 }

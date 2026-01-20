@@ -21,14 +21,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.autos.AUTO_Side;
-import frc.robot.autos.AUTO_Middle;
-import frc.robot.autos.AUTO_MiddleSide;
+import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.drive.JoystickDrive;
@@ -180,8 +179,9 @@ public class RobotContainer {
         autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle(drive, driveSimulation, false));
         autoChooser.addOption("Auto Middle Left", new AUTO_MiddleSide(drive, driveSimulation, false));
         autoChooser.addOption("Auto Middle Right", new AUTO_MiddleSide(drive, driveSimulation, true));
-        autoChooser.addOption("Auto Left", new AUTO_Side(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Right", new AUTO_Side(drive, driveSimulation, true));
+        autoChooser.addOption("Auto Left Side", new AUTO_Side(drive, driveSimulation, false));
+        autoChooser.addOption("Auto Right Side", new AUTO_Side(drive, driveSimulation, true));
+        autoChooser.addOption("Auto Right", new AUTO_Right(drive, driveSimulation, false));
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
@@ -241,7 +241,13 @@ public class RobotContainer {
     public void resetSimulationField() {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
-        drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+                drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
+        } else {
+                drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
+        }
+
+        
         SimulatedArena.getInstance().resetFieldForAuto();
 
         for(int i = 0; i < 100; i++){
@@ -254,10 +260,14 @@ public class RobotContainer {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
         SimulatedArena.getInstance().simulationPeriodic();
+
+        Logger.recordOutput("FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
+        Logger.recordOutput("FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput("FieldSimulation/Alliance", DriverStation.getAlliance().toString());
+
     }
 
     public static boolean motorBrakeEnabled = false;

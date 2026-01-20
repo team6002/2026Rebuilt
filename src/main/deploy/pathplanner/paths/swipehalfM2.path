@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.9509200861045315,
-        "y": -0.14940924280369927
+        "y": -0.14940924280369838
       },
       "isLocked": false,
       "linkedName": null
@@ -63,7 +63,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 92.11758667586311
+      "rotationDegrees": 92.11758667586312
     }
   ],
   "constraintZones": [],
@@ -82,7 +82,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Middle Auto 2",
+  "folder": "Middle Side Auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
