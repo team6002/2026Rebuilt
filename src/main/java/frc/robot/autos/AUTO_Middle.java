@@ -21,7 +21,7 @@ public class AUTO_Middle extends SequentialCommandGroup {
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,new WaitCommand(2)
             // ,drive.followPath("shootfirstcycle")
-            ,new InstantCommand(()->sim.rotateAboutCenter(FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle().getRadians() + (DriverStation.getAlliance().get() == Alliance.Blue ? 0 : Math.PI)))
+            ,new InstantCommand(()->sim.rotateAboutCenter(FieldConstants.HubPose.minus(drive.getPose().getTranslation()).getAngle().getRadians() + (DriverStation.getAlliance().get() == Alliance.Blue ? 0 : Math.PI)))
             ,new ShootFuelSim(sim)
             ,drive.followPath("pickupmiddleM1", mirrored)
             ,drive.followPath("shootclimbM1", mirrored)

@@ -227,7 +227,7 @@ public class RobotContainer {
                 drive, 
                 ()-> -driveInput.joystickYSupplier.getAsDouble(), 
                 ()-> -driveInput.joystickXSupplier.getAsDouble(),
-                ()-> FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle()));
+                ()-> FieldConstants.HubPose.minus(drive.getPose().getTranslation()).getAngle()));
     }
 
     /**

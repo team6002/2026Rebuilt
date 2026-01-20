@@ -18,7 +18,7 @@ public class AUTO_Right extends SequentialCommandGroup {
             ,new InstantCommand(()->drive.setAutoStartPose("getmiddleR1", mirrored))
             ,drive.followPath("getmiddleR1", mirrored)
             ,drive.followPath("gotoHPR1", mirrored)
-            ,new InstantCommand(()->sim.rotateAboutCenter(FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle().getRadians() + (DriverStation.getAlliance().get() == Alliance.Blue ? 0 : Math.PI)))
+            ,new InstantCommand(()->sim.rotateAboutCenter(FieldConstants.HubPose.minus(drive.getPose().getTranslation()).getAngle().getRadians() + (DriverStation.getAlliance().get() == Alliance.Blue ? 0 : Math.PI)))
             ,new ShootFuelSim(sim)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,drive.followPath("climbshootR1", mirrored)
