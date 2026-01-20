@@ -44,7 +44,7 @@ public class ShootFuelSim extends Command {
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
 
             // Calculate predicted target position and use that distance for params
-            ShootingResult result = calculateShot(robotPose, FieldConstants.HubPose);
+            ShootingResult result = calculateShot(robotPose, FieldConstants.getHubPose());
 
             IntakeIOSim.obtainFuelFromHopper();
 

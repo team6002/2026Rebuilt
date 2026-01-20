@@ -7,15 +7,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.subsystems.drive.Drive;
 
-public class AUTO_Left extends SequentialCommandGroup {
-    public AUTO_Left(Drive drive, SwerveDriveSimulation sim) {
+public class AUTO_Side extends SequentialCommandGroup {
+    public AUTO_Side(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
         addCommands(
-            new InstantCommand(()->drive.setAutoStartPose("gotomiddle"))
-            ,drive.followPath("gotomiddle")
-            ,drive.followPath("grabmiddlefuel")
-            ,drive.followPath("scoreitall")
+            new InstantCommand(()->drive.setAutoStartPose("gotomiddleL1", mirrored))
+            ,drive.followPath("gotomiddleL1", mirrored)
+            ,drive.followPath("grabfuelL1", mirrored)
+            ,drive.followPath("scoreL1", mirrored)
             ,new ShootFuelSim(sim)
-            ,drive.followPath("climb")
         );
 
         // addCommands(

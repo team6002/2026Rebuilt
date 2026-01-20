@@ -1,5 +1,4 @@
 package frc.robot.commands;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -39,7 +38,7 @@ public class ShootFuel extends Command{
     @Override
     public void execute() {
         // calculate distance to hub
-        double distance = Drive.getPoseStatic().getTranslation().getDistance(FieldConstants.HubPose);
+        double distance = Drive.getPoseStatic().getTranslation().getDistance(FieldConstants.getHubPose());
 
         ShooterConstants.ShootingParams params = ShooterConstants.getShootingParams(distance);
 
