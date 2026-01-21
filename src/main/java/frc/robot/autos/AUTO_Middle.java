@@ -5,6 +5,7 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 // import edu.wpi.first.wpilibj.DriverStation;
 // import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ShootFuelSim;
@@ -20,13 +21,16 @@ public class AUTO_Middle extends SequentialCommandGroup {
             ,drive.followPath("pickupHPM1", mirrored)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,new WaitCommand(2)
-            // ,drive.followPath("shootfirstcycle")
-            // ,new InstantCommand(()->sim.rotateAboutCenter(FieldConstants.HubPose.minus(drive.getPose().getTranslation()).getAngle().getRadians() + (DriverStation.getAlliance().get() == Alliance.Blue ? 0 : Math.PI)))
-            ,new ShootFuelSim(sim)
+            ,new ParallelCommandGroup(
+                new ShootFuelSim(sim)
+                ,drive.followPath("approachmiddleM1", mirrored)
+            )
             ,drive.followPath("pickupmiddleM1", mirrored)
-            ,drive.followPath("shootclimbM1", mirrored)
-            ,new ShootFuelSim(sim)
-            // ,drive.followPath("climb")
+            ,drive.followPath("gotomiddleM1", mirrored)
+            ,new ParallelCommandGroup(
+                drive.followPath("climbshootR1", mirrored)
+                ,new ShootFuelSim(sim)
+            )
         );
     }
 }
