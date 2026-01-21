@@ -38,7 +38,7 @@ public class ShootFuel extends Command{
     @Override
     public void execute() {
         // calculate distance to hub
-        double distance = Drive.getPoseStatic().getTranslation().getDistance(FieldConstants.HubPose);
+        double distance = Drive.getPoseStatic().getTranslation().getDistance(FieldConstants.getHubPose());
 
         ShooterConstants.ShootingParams params = ShooterConstants.getShootingParams(distance);
 

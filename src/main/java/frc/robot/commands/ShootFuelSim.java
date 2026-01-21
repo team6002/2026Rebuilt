@@ -35,12 +35,16 @@ public class ShootFuelSim extends Command {
 
     @Override
     public void execute(){
-        if (timer > 3 && IntakeIOSim.numObjectsInHopper() > 0) {
+        if (timer >= 3 && IntakeIOSim.numObjectsInHopper() > 0) {
+            if (Math.random() < .33){
+                timer = 0; 
+                return;
+            }
 
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
 
             // Calculate predicted target position and use that distance for params
-            ShootingResult result = calculateShot(robotPose, FieldConstants.HubPose);
+            ShootingResult result = calculateShot(robotPose, FieldConstants.getHubPose());
 
             IntakeIOSim.obtainFuelFromHopper();
 
@@ -50,7 +54,7 @@ public class ShootFuelSim extends Command {
                     new Translation2d(), // no offset for now
                     driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
                     robotPose.getRotation().plus(result.turretAngleRobot),
-                    Inches.of(6),
+                    Inches.of(24), // shooter height from floor
                     MetersPerSecond.of(result.params.velocityMPS()),
                     Radians.of(result.params.angRad())
                 )
