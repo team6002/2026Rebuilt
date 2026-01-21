@@ -16,7 +16,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -51,7 +50,6 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -185,10 +183,8 @@ public class RobotContainer {
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        autoChooser.addOption("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
         autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
@@ -212,21 +208,22 @@ public class RobotContainer {
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
-                ? () -> drive.resetOdometry(
-                        driveSimulation
-                                .getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during simulation
-                : () -> drive.resetOdometry(
-                        new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
+            ? () -> drive.resetOdometry(
+                driveSimulation
+                    .getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during simulation
+            : () -> drive.resetOdometry(
+                new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
         if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation).until(()-> !driver.scoreButton().getAsBoolean()));
         if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
 
         driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(
-                drive, 
-                ()-> -driveInput.joystickYSupplier.getAsDouble(), 
-                ()-> -driveInput.joystickXSupplier.getAsDouble(),
-                ()-> FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle()));
+            drive, 
+            ()-> -driveInput.joystickYSupplier.getAsDouble(), 
+            ()-> -driveInput.joystickXSupplier.getAsDouble(),
+            ()-> FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle())
+        );
     }
 
     /**
@@ -243,17 +240,13 @@ public class RobotContainer {
 
         drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
         SimulatedArena.getInstance().resetFieldForAuto();
-
-        for(int i = 0; i < 100; i++){
-                SimulatedArena.getInstance().addGamePiece(
-                        new RebuiltFuelOnField(new Translation2d(7 + Math.random()*2, 1 + Math.random() * 6)));
-        }
     }
 
     public void updateSimulation() {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
         SimulatedArena.getInstance().simulationPeriodic();
+
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
