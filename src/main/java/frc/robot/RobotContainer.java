@@ -259,7 +259,6 @@ public class RobotContainer {
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput("FieldSimulation/Alliance", DriverStation.getAlliance().toString());
-
     }
 
     public static boolean motorBrakeEnabled = false;
@@ -269,8 +268,6 @@ public class RobotContainer {
 
         System.out.println("Set motor brake: " + brakeModeEnabled);
         drive.setMotorBrake(brakeModeEnabled);
-        // arm.setMotorBrake(brakeModeEnabled);
-        // elevator.setMotorBrake(brakeModeEnabled);
 
         motorBrakeEnabled = brakeModeEnabled;
     }
@@ -282,8 +279,6 @@ public class RobotContainer {
                         : drive.getPose());
         if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM)
             field.getObject("Odometry").setPose(drive.getPose());
-
-        // ReefAlignment.updateDashboard();
 
         AlertsManager.updateLEDAndLog(ledStatusLight);
     }

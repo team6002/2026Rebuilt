@@ -46,6 +46,9 @@ public class ShootFuelSim extends Command {
             // Calculate predicted target position and use that distance for params
             ShootingResult result = calculateShot(robotPose, FieldConstants.getHubPose());
 
+            double turretAngle = result.turretAngleRobot.getDegrees();
+            Rotation2d deadzonedTurretAngle = Rotation2d.fromDegrees(Math.min(45, turretAngle % 315)).plus(robotPose.getRotation());
+
             IntakeIOSim.obtainFuelFromHopper();
 
             SimulatedArena.getInstance().addGamePieceProjectile(
@@ -53,7 +56,7 @@ public class ShootFuelSim extends Command {
                     robotPose.getTranslation(),
                     new Translation2d(), // no offset for now
                     driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                    robotPose.getRotation().plus(result.turretAngleRobot),
+                    deadzonedTurretAngle,
                     Inches.of(24), // shooter height from floor
                     MetersPerSecond.of(result.params.velocityMPS()),
                     Radians.of(result.params.angRad())
